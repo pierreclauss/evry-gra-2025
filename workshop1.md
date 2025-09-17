@@ -224,7 +224,7 @@ summary(table_returns_first)
     ##  Median : 0.01178   Median : 0.01488   Median : 0.013508   Median : 0.006217  
     ##  Mean   : 0.01002   Mean   : 0.01144   Mean   : 0.008645   Mean   : 0.006123  
     ##  3rd Qu.: 0.03687   3rd Qu.: 0.05880   3rd Qu.: 0.067126   3rd Qu.: 0.051570  
-    ##  Max.   : 0.13924   Max.   : 0.42841   Max.   : 0.439123   Max.   : 0.268997  
+    ##  Max.   : 0.13924   Max.   : 0.42841   Max.   : 0.439122   Max.   : 0.268996  
     ##      CA.PA               BN.PA          
     ##  Min.   :-0.243071   Min.   :-0.207393  
     ##  1st Qu.:-0.045363   1st Qu.:-0.022307  
@@ -360,6 +360,19 @@ financial returns for the
 
 Then, I can plug-in this estimate in the formula of the GMV portfolio to
 obtain unbiased estimators of GMV weights.
+
+``` r
+n <- ncol(table_returns_learning)
+T <- nrow(table_returns_learning)
+e <- rep(1, n)
+perio <- 12
+
+Sigma <- cov(table_returns_learning) * (T - 1) / (T - n - 2) * perio
+C <- t(e) %*% solve(Sigma) %*% e
+sigmag <- sqrt(1 / C)
+omega <- 1 / as.numeric(C) * solve(Sigma) %*% e
+barplot(as.numeric(omega), col = 'black')
+```
 
 ![](workshop1_files/figure-gfm/gmv_empirical-1.png)<!-- -->
 
