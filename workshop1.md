@@ -224,10 +224,10 @@ summary(table_returns_first)
     ##  Median : 0.01178   Median : 0.01488   Median : 0.013508   Median : 0.006217  
     ##  Mean   : 0.01002   Mean   : 0.01144   Mean   : 0.008645   Mean   : 0.006123  
     ##  3rd Qu.: 0.03687   3rd Qu.: 0.05880   3rd Qu.: 0.067126   3rd Qu.: 0.051570  
-    ##  Max.   : 0.13924   Max.   : 0.42841   Max.   : 0.439122   Max.   : 0.268996  
+    ##  Max.   : 0.13924   Max.   : 0.42841   Max.   : 0.439122   Max.   : 0.268997  
     ##      CA.PA               BN.PA          
     ##  Min.   :-0.243071   Min.   :-0.207393  
-    ##  1st Qu.:-0.045363   1st Qu.:-0.022307  
+    ##  1st Qu.:-0.045363   1st Qu.:-0.022308  
     ##  Median : 0.003178   Median : 0.006851  
     ##  Mean   :-0.000773   Mean   : 0.005468  
     ##  3rd Qu.: 0.042806   3rd Qu.: 0.037865  
@@ -421,6 +421,20 @@ the diagonal residual covariance matrix determined for each asset
 Then, I can plug-in this estimator of covariance matrix in the formula
 of the GMV portfolio to obtain a more robust estimator of GMV weights.
 
+``` r
+valp <- eigen(Sigma)$values
+vecp <- eigen(Sigma)$vectors
+vp1 <- vecp[, 1]
+lambda1 <- valp[1]
+varepsilon1 <- diag(Sigma) - vp1 ^ 2 * lambda1
+Sigma_epsilon1 <- diag(varepsilon1, n, n)
+Sigma1 <- (lambda1 * vp1 %*% t(vp1) + Sigma_epsilon1)
+C1 <- t(e) %*% solve(Sigma1) %*% e
+sigmag1 <- sqrt(1 / C1)
+omega1 <- 1 / as.numeric(C1) * solve(Sigma1) %*% e
+barplot(as.numeric(omega1), col = 'black')
+```
+
 ![](workshop1_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 The anticipated volatility of the portfolio constructed on the learning
@@ -449,6 +463,18 @@ the diagonal residual covariance matrix determined for each asset
 
 Then, I can plug-in this estimator of covariance matrix in the formula
 of the GMV portfolio to obtain a more robust estimator of GMV weights.
+
+``` r
+vp3 <- cbind(vecp[, 1], vecp[, 2], vecp[, 3])
+lambda3 <- diag(c(valp[1], valp[2], valp[3]), 3, 3)
+varepsilon3 <- diag(Sigma) - vp3 ^ 2 %*% diag(lambda3)
+Sigma_epsilon3 <- diag(as.numeric(varepsilon3), n, n)
+Sigma3 <- (vp3 %*% lambda3 %*% t(vp3) + Sigma_epsilon3)
+C3 <- t(e) %*% solve(Sigma3) %*% e
+sigmag3 <- sqrt(1 / C3)
+omega3 <- 1 / as.numeric(C3) * solve(Sigma3) %*% e
+barplot(as.numeric(omega3), col = 'black')
+```
 
 ![](workshop1_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
