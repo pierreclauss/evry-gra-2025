@@ -117,11 +117,11 @@ summary(table_returns)
     ##  Median : 0.013494   Median : 0.01593   Median : 0.003991   Median : 0.02217  
     ##  Mean   : 0.007877   Mean   : 0.01213   Mean   : 0.008655   Mean   : 0.01935  
     ##  3rd Qu.: 0.051419   3rd Qu.: 0.05334   3rd Qu.: 0.046467   3rd Qu.: 0.06024  
-    ##  Max.   : 0.185790   Max.   : 0.19114   Max.   : 0.387491   Max.   : 0.19167  
+    ##  Max.   : 0.185791   Max.   : 0.19114   Max.   : 0.387490   Max.   : 0.19167  
     ##      CAP.PA              MC.PA               BGRN          
     ##  Min.   :-0.223947   Min.   :-0.17729   Min.   :-0.040008  
     ##  1st Qu.:-0.052590   1st Qu.:-0.03600   1st Qu.:-0.006876  
-    ##  Median : 0.008067   Median : 0.01426   Median : 0.002722  
+    ##  Median : 0.008067   Median : 0.01426   Median : 0.002721  
     ##  Mean   : 0.006886   Mean   : 0.01192   Mean   : 0.001922  
     ##  3rd Qu.: 0.074056   3rd Qu.: 0.06242   3rd Qu.: 0.013077  
     ##  Max.   : 0.173089   Max.   : 0.20035   Max.   : 0.039630
@@ -352,6 +352,28 @@ vol <- sqrt(diag(Sigma))
 theta <- 0.2
 Q <- mu + vol * note * theta
 tau <- 0.5
+```
+
+``` r
+# Mixed estimation of returns
+Omega <- diag(diag(Sigma), n, n)
+mu_mixed <-
+  solve(solve(tau * Sigma) + solve(Omega)) %*% (solve(tau * Sigma) %*% mu + solve(Omega) %*% Q)
+
+# Tactical allocation with views directly
+A_Q <- t(e) %*% solve(Sigma) %*% Q
+omega_Q <- 1 / as.numeric(A_Q) * solve(Sigma) %*% Q
+
+# Tactical allocation with mixed estimation 
+A_mixed <- t(e) %*% solve(Sigma) %*% mu_mixed
+omega_mixed <- 1 / as.numeric(A_mixed) * solve(Sigma) %*% mu_mixed
+barplot(
+  as.numeric(omega_mixed),
+  col = 'black',
+  names.arg = barnames,
+  ylim = c(-1, 2),
+  cex.names = 0.7
+)
 ```
 
 ![](workshop2_files/figure-gfm/BL-1.png)<!-- -->
