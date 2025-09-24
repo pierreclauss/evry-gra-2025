@@ -113,17 +113,17 @@ summary(table_returns)
 
     ##      EN.PA              ENGI.PA             TTE.PA              SU.PA         
     ##  Min.   :-0.246900   Min.   :-0.37379   Min.   :-0.142474   Min.   :-0.13394  
-    ##  1st Qu.:-0.024855   1st Qu.:-0.02124   1st Qu.:-0.037344   1st Qu.:-0.01696  
-    ##  Median : 0.013524   Median : 0.01823   Median : 0.003434   Median : 0.02219  
-    ##  Mean   : 0.008048   Mean   : 0.01227   Mean   : 0.008305   Mean   : 0.02042  
-    ##  3rd Qu.: 0.051362   3rd Qu.: 0.05317   3rd Qu.: 0.045323   3rd Qu.: 0.06164  
-    ##  Max.   : 0.185791   Max.   : 0.19114   Max.   : 0.387490   Max.   : 0.19167  
+    ##  1st Qu.:-0.025070   1st Qu.:-0.02141   1st Qu.:-0.038134   1st Qu.:-0.01744  
+    ##  Median : 0.013494   Median : 0.01592   Median : 0.003991   Median : 0.02217  
+    ##  Mean   : 0.007877   Mean   : 0.01213   Mean   : 0.008655   Mean   : 0.01935  
+    ##  3rd Qu.: 0.051419   3rd Qu.: 0.05334   3rd Qu.: 0.046467   3rd Qu.: 0.06024  
+    ##  Max.   : 0.185790   Max.   : 0.19114   Max.   : 0.387491   Max.   : 0.19167  
     ##      CAP.PA              MC.PA               BGRN          
     ##  Min.   :-0.223947   Min.   :-0.17729   Min.   :-0.040008  
-    ##  1st Qu.:-0.052126   1st Qu.:-0.03577   1st Qu.:-0.006787  
-    ##  Median : 0.010553   Median : 0.01553   Median : 0.002881  
-    ##  Mean   : 0.007134   Mean   : 0.01232   Mean   : 0.002016  
-    ##  3rd Qu.: 0.073007   3rd Qu.: 0.06241   3rd Qu.: 0.013005  
+    ##  1st Qu.:-0.052590   1st Qu.:-0.03600   1st Qu.:-0.006876  
+    ##  Median : 0.008066   Median : 0.01426   Median : 0.002722  
+    ##  Mean   : 0.006886   Mean   : 0.01192   Mean   : 0.001922  
+    ##  3rd Qu.: 0.074056   3rd Qu.: 0.06242   3rd Qu.: 0.013077  
     ##  Max.   : 0.173089   Max.   : 0.20035   Max.   : 0.039630
 
 I can go deeper thanks to distribution graphics: the non-parametric
@@ -227,7 +227,7 @@ monetary assets (null weight for this last asset in the TP).
 Before modelling, I separate the initial sample between a learning
 sample and a backtest sample to evaluate the performance of our
 modelling. I choose May 2023 as a separation date to backtest the
-strategy on the last 1.5 year of the sample.
+strategy on the last 2.5 year of the sample.
 
 ``` r
 end_date <- nrow(table_returns)
@@ -235,7 +235,7 @@ table_returns_learning <- table_returns %>% slice(1:55)
 table_returns_backtest <- table_returns %>% slice(56:end_date)
 ```
 
-There are 55 learning observations and 27 backtest observations. My
+There are 55 learning observations and 26 backtest observations. My
 objective is to observe if I can obtain better performance with a
 tactical allocation on the backtest sample. Before all, I present the
 construction of the strategic allocation.
@@ -254,10 +254,39 @@ Then, I can plug-in these estimates on the formula of the TP to obtain
 unbiased estimators of its weights. I assume that
 ![r_f=0\\](https://latex.codecogs.com/png.latex?r_f%3D0%5C%25 "r_f=0\%").
 
+``` r
+n <- ncol(table_returns_learning)
+T <- nrow(table_returns_learning)
+e <- rep(1, n)
+perio <- 12
+rf <- 0
+
+mu <- colMeans(table_returns_learning) * perio - rf
+Sigma <- cov(table_returns_learning) * (T - 1) / (T - n - 2) * perio
+A <- t(e) %*% solve(Sigma) %*% mu
+omega <- 1 / as.numeric(A) * solve(Sigma) %*% mu
+
+barnames <-
+  c('Bouygues',
+    'Engie',
+    'Total',
+    'Schneider',
+    'Cap Gemini',
+    'LVMH',
+    'Green Bond')
+barplot(
+  as.numeric(omega),
+  col = 'black',
+  names.arg = barnames,
+  ylim = c(-1, 2),
+  cex.names = 0.7
+)
+```
+
 ![](workshop2_files/figure-gfm/TP-1.png)<!-- -->
 
 The realised return observed on the backtest sample of the portfolio
-constructed on the learning sample is equal to 10.78%.
+constructed on the learning sample is equal to 13.92%.
 
 **Code for the realised return (with Alt Gr 7 at the beginning and at
 the end): r percent(mean(as.matrix(table_returns_backtest) %*% omega) *
@@ -328,12 +357,12 @@ tau <- 0.5
 ![](workshop2_files/figure-gfm/BL-1.png)<!-- -->
 
 The realised return observed on the backtest sample of the BL portfolio
-constructed on the learning sample is equal to 14.11%.
+constructed on the learning sample is equal to 18.17%.
 
 I can compare it to the portfolio constructed directly with views and
 without uncertainty on the predictions. The realised return observed on
 the backtest sample of this portfolio constructed on the learning sample
-is equal to 31.17%. BL approach integrates uncertainty and then less
+is equal to 37.17%. BL approach integrates uncertainty and then less
 confidence in the views.
 
 ## To conclude the second workshop
