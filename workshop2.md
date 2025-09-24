@@ -114,14 +114,14 @@ summary(table_returns)
     ##      EN.PA              ENGI.PA             TTE.PA              SU.PA         
     ##  Min.   :-0.246900   Min.   :-0.37379   Min.   :-0.142474   Min.   :-0.13394  
     ##  1st Qu.:-0.025070   1st Qu.:-0.02141   1st Qu.:-0.038134   1st Qu.:-0.01744  
-    ##  Median : 0.013494   Median : 0.01592   Median : 0.003991   Median : 0.02217  
+    ##  Median : 0.013494   Median : 0.01593   Median : 0.003991   Median : 0.02217  
     ##  Mean   : 0.007877   Mean   : 0.01213   Mean   : 0.008655   Mean   : 0.01935  
     ##  3rd Qu.: 0.051419   3rd Qu.: 0.05334   3rd Qu.: 0.046467   3rd Qu.: 0.06024  
     ##  Max.   : 0.185790   Max.   : 0.19114   Max.   : 0.387491   Max.   : 0.19167  
     ##      CAP.PA              MC.PA               BGRN          
     ##  Min.   :-0.223947   Min.   :-0.17729   Min.   :-0.040008  
     ##  1st Qu.:-0.052590   1st Qu.:-0.03600   1st Qu.:-0.006876  
-    ##  Median : 0.008066   Median : 0.01426   Median : 0.002722  
+    ##  Median : 0.008067   Median : 0.01426   Median : 0.002722  
     ##  Mean   : 0.006886   Mean   : 0.01192   Mean   : 0.001922  
     ##  3rd Qu.: 0.074056   3rd Qu.: 0.06242   3rd Qu.: 0.013077  
     ##  Max.   : 0.173089   Max.   : 0.20035   Max.   : 0.039630
